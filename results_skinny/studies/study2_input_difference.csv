@@ -1,0 +1,11 @@
+Description,Delta_Hex,Row_Category,Hamming_Weight,Rounds,Accuracy,ROC_AUC
+"Delta_1 (Row 3, Cell 15 LSB, No Tweakey XOR)",00000000000000000000000000000001,Row 2-3 (No TK),1,1,0.62,0.5
+"Delta_1 (Row 3, Cell 15 LSB, No Tweakey XOR)",00000000000000000000000000000001,Row 2-3 (No TK),1,2,0.8533,0.5
+"Delta_2 (Row 0, Cell 0 LSB, Receives Tweakey XOR)",01000000000000000000000000000000,Row 0-1 (TK XOR),1,1,0.9973,0.5
+"Delta_2 (Row 0, Cell 0 LSB, Receives Tweakey XOR)",01000000000000000000000000000000,Row 0-1 (TK XOR),1,2,0.916,0.5
+"Delta_3 (Row 0, Cell 0 MSB, Receives Tweakey XOR)",80000000000000000000000000000000,Row 0-1 (TK XOR),1,1,0.964,0.5
+"Delta_3 (Row 0, Cell 0 MSB, Receives Tweakey XOR)",80000000000000000000000000000000,Row 0-1 (TK XOR),1,2,0.896,0.5
+"Delta_4 (Row 1, Cell 5 Byte, Receives Tweakey XOR)",0000000000ff00000000000000000000,Row 0-1 (TK XOR),8,1,1.0,0.5
+"Delta_4 (Row 1, Cell 5 Byte, Receives Tweakey XOR)",0000000000ff00000000000000000000,Row 0-1 (TK XOR),8,2,0.996,0.5
+Delta_5 (High Weight Distributed across all rows),01010101010101010101010101010101,Distributed,16,1,0.916,0.5
+Delta_5 (High Weight Distributed across all rows),01010101010101010101010101010101,Distributed,16,2,0.6333,0.5

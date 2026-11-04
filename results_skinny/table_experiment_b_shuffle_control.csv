@@ -1,0 +1,16 @@
+Rounds,Model,Original_Accuracy,Shuffled_Accuracy,Accuracy_Delta,Preserved
+1,1D CNN,0.9423,0.9387,0.0037,True
+1,2D CNN (Dense=2),0.512,0.501,0.011,True
+1,2D CNN (Dense=3),0.5,0.5,0.0,True
+1,MLP (Dense=2),0.754,0.7593,0.0053,True
+1,MLP (Dense=3),0.7273,0.712,0.0153,True
+2,1D CNN,0.983,0.9813,0.0017,True
+2,2D CNN (Dense=2),0.5187,0.5123,0.0063,True
+2,2D CNN (Dense=3),0.5,0.5,0.0,True
+2,MLP (Dense=2),0.7613,0.777,0.0157,True
+2,MLP (Dense=3),0.5313,0.5447,0.0133,True
+4,1D CNN,0.9993,0.999,0.0003,True
+4,2D CNN (Dense=2),0.495,0.4873,0.0077,True
+4,2D CNN (Dense=3),0.5137,0.5057,0.008,True
+4,MLP (Dense=2),0.5667,0.5603,0.0063,True
+4,MLP (Dense=3),0.528,0.5397,0.0117,True

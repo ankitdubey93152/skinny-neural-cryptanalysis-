@@ -1,0 +1,13 @@
+Epoch,Model,Train_Loss,Val_Loss
+1,1d_cnn,0.21139,0.22033
+2,1d_cnn,0.0,0.0569
+3,1d_cnn,0.0,0.01854
+1,2d_cnn_dense2,0.95994,0.37588
+2,2d_cnn_dense2,1e-05,0.22144
+3,2d_cnn_dense2,0.0,0.10392
+1,2d_cnn_dense3,0.59273,0.35818
+2,2d_cnn_dense3,0.0,0.26703
+3,2d_cnn_dense3,0.0,0.17832
+1,mlp_dense2,0.63257,0.46176
+2,mlp_dense2,0.19542,0.04768
+3,mlp_dense2,0.016,0.01105

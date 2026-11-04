@@ -1,0 +1,49 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest & testing caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual Environments & Environment Files (Strictly excluded)
+.venv/
+venv/
+env/
+ENV/
+*.env
+*.env.*
+.env
+.env.*
+*.evn
+*.evn.*
+.evn
+.evn.*
+
+# IDE & Editor settings
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Generated datasets
+data/*.npz
+data_skinny/
+*.npz
+
+# Model weights & Checkpoints (Heavy binary files)
+*.h5
+*.keras
+*.ckpt
+*.weights.h5
+checkpoints/
+checkpoints*/
+*checkpoints*
+**/checkpoints*/**
+
+# Logs and scratch
+*.log
+scratch/

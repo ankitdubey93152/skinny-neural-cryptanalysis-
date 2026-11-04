@@ -1,0 +1,13 @@
+Epoch,Model,Train_Accuracy,Val_Accuracy
+1,1d_cnn,0.95121,0.993
+2,1d_cnn,1.0,1.0
+3,1d_cnn,1.0,1.0
+1,2d_cnn_dense2,0.84693,1.0
+2,2d_cnn_dense2,1.0,1.0
+3,2d_cnn_dense2,1.0,1.0
+1,2d_cnn_dense3,0.92264,0.99967
+2,2d_cnn_dense3,1.0,0.99967
+3,2d_cnn_dense3,1.0,1.0
+1,mlp_dense2,0.64621,0.795
+2,mlp_dense2,0.95071,0.997
+3,mlp_dense2,0.99886,0.99967

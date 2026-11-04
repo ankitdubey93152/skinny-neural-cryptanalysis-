@@ -1,0 +1,41 @@
+{
+  "cipher": "SKINNY-128-128",
+  "block_size_bits": 128,
+  "tweakey_size_bits": 128,
+  "full_rounds": 40,
+  "vectors": [
+    {
+      "description": "Official 40-round known-answer test vector from NIST LWC Remus specification",
+      "primary_source": {
+        "document": "NIST Lightweight Cryptography (LWC) Candidate Submission: Remus Specification",
+        "authors": ["Tetsu Iwata", "Mustafa Khairallah", "Kazuhiko Minematsu", "Thomas Peyrin"],
+        "section": "Appendix A: Test Vectors for Primitive SKINNY-128-128",
+        "url": "https://csrc.nist.gov/CSRC/media/Projects/lightweight-cryptography/documents/round-1/remus-spec.pdf",
+        "notes": "Thomas Peyrin is a co-designer of SKINNY (CRYPTO 2016). Validates full 40 rounds of SKINNY-128-128 (TK1 only)."
+      },
+      "rounds": 40,
+      "tweakey_hex": "4f55cfb0520cac52fd92c15f37073e93",
+      "plaintext_hex": "f20adb0eb08b648a3b2eeed1f0adda14",
+      "ciphertext_hex": "22ff30d498ea62d7e45b476e33675b74"
+    },
+    {
+      "description": "1-round hand-derived vector from CRYPTO 2016 specification text (zero block and zero tweakey)",
+      "primary_source": {
+        "document": "The SKINNY Family of Block Ciphers and Its Low-Latency Variant MANTIS",
+        "authors": [
+          "Christof Beierle", "Jérémy Jean", "Stefan Kölbl", "Gregor Leander",
+          "Amir Moradi", "Thomas Peyrin", "Yu Sasaki", "Pascal Sasdrich", "Siang Meng Sim"
+        ],
+        "publication": "CRYPTO 2016, IACR Cryptology ePrint Archive Report 2016/660",
+        "section": "Section 2: Specifications of SKINNY (SubCells, AddConstants, AddRoundTweakey, ShiftRows, MixColumns)",
+        "url": "https://eprint.iacr.org/2016/660.pdf",
+        "notes": "Verified step-by-step from SBOX[0]=0x65, RC0=0x01, right shifts, and MixColumns binary matrix multiplication."
+      },
+      "rounds": 1,
+      "tweakey_hex": "00000000000000000000000000000000",
+      "plaintext_hex": "00000000000000000000000000000000",
+      "ciphertext_hex": "64656765646565650000020001000200"
+    }
+  ]
+}
+

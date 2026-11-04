@@ -1,0 +1,16 @@
+Model,Params,Rounds,Accuracy
+1d_cnn,37057,1,1.0
+1d_cnn,37057,2,1.0
+1d_cnn,37057,4,0.9987
+2d_cnn_dense2,137857,1,1.0
+2d_cnn_dense2,137857,2,1.0
+2d_cnn_dense2,137857,4,1.0
+2d_cnn_dense3,138881,1,1.0
+2d_cnn_dense3,138881,2,0.9927
+2d_cnn_dense3,138881,4,1.0
+mlp_dense2,132609,1,1.0
+mlp_dense2,132609,2,0.981
+mlp_dense2,132609,4,0.95
+mlp_dense3,133633,1,0.9987
+mlp_dense3,133633,2,0.991
+mlp_dense3,133633,4,0.9797
