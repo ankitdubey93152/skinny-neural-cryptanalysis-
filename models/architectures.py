@@ -14,20 +14,41 @@ DEFAULT_USE_BATCH_NORM: bool = True
 DEFAULT_POOLING: str = "flatten"
 
 
-def build_mlp(input_dim: Union[int, Tuple[int, ...]], n_dense_layers: int = 3, units: int = DEFAULT_UNITS, learning_rate: float = DEFAULT_LEARNING_RATE) -> tf.keras.Model:
+def build_mlp(
+    input_dim: Union[int, Tuple[int, ...]],
+    n_dense_layers: int = 3,
+    units: int = DEFAULT_UNITS,
+    learning_rate: float = DEFAULT_LEARNING_RATE,
+    num_classes: int = 1,
+) -> tf.keras.Model:
     """Construct Multi-Layer Perceptron (MLP) distinguisher."""
     shape = (input_dim,) if isinstance(input_dim, int) else (input_dim if len(input_dim) == 1 else (int(np.prod(input_dim)),))
     inputs = layers.Input(shape=shape, name="mlp_input")
     x = inputs
     for i in range(n_dense_layers):
         x = layers.Dense(units, activation="relu", name=f"dense_{i + 1}")(x)
-    outputs = layers.Dense(1, activation="sigmoid", name="output_sigmoid")(x)
+    if num_classes == 1:
+        outputs = layers.Dense(1, activation="sigmoid", name="output_sigmoid")(x)
+        loss = "binary_crossentropy"
+    else:
+        outputs = layers.Dense(num_classes, activation="softmax", name="output_softmax")(x)
+        loss = "categorical_crossentropy"
     m = models.Model(inputs=inputs, outputs=outputs, name=f"MLP_L{n_dense_layers}_U{units}")
-    m.compile(optimizer=optimizers.Adam(learning_rate=learning_rate), loss="binary_crossentropy", metrics=["accuracy"])
+    m.compile(optimizer=optimizers.Adam(learning_rate=learning_rate), loss=loss, metrics=["accuracy"])
     return m
 
 
-def build_cnn_1d(input_shape: Tuple[int, int], n_dense_layers: int = 2, filters: Sequence[int] = DEFAULT_FILTERS_1D, kernel_size: int = DEFAULT_KERNEL_SIZE_1D, dense_units: int = DEFAULT_UNITS, use_batch_norm: bool = DEFAULT_USE_BATCH_NORM, pooling: str = DEFAULT_POOLING, learning_rate: float = DEFAULT_LEARNING_RATE) -> tf.keras.Model:
+def build_cnn_1d(
+    input_shape: Tuple[int, int],
+    n_dense_layers: int = 2,
+    filters: Sequence[int] = DEFAULT_FILTERS_1D,
+    kernel_size: int = DEFAULT_KERNEL_SIZE_1D,
+    dense_units: int = DEFAULT_UNITS,
+    use_batch_norm: bool = DEFAULT_USE_BATCH_NORM,
+    pooling: str = DEFAULT_POOLING,
+    learning_rate: float = DEFAULT_LEARNING_RATE,
+    num_classes: int = 1,
+) -> tf.keras.Model:
     """Construct 1D Convolutional Neural Network distinguisher."""
     inputs = layers.Input(shape=input_shape, name="cnn1d_input")
     x = inputs
@@ -39,13 +60,28 @@ def build_cnn_1d(input_shape: Tuple[int, int], n_dense_layers: int = 2, filters:
     x = layers.GlobalAveragePooling1D(name="gap1d")(x) if pooling == "gap" else layers.Flatten(name="flatten")(x)
     for i in range(n_dense_layers):
         x = layers.Dense(dense_units, activation="relu", name=f"dense_{i + 1}")(x)
-    outputs = layers.Dense(1, activation="sigmoid", name="output_sigmoid")(x)
+    if num_classes == 1:
+        outputs = layers.Dense(1, activation="sigmoid", name="output_sigmoid")(x)
+        loss = "binary_crossentropy"
+    else:
+        outputs = layers.Dense(num_classes, activation="softmax", name="output_softmax")(x)
+        loss = "categorical_crossentropy"
     m = models.Model(inputs=inputs, outputs=outputs, name=f"CNN1D_L{n_dense_layers}_F{'-'.join(map(str, filters))}")
-    m.compile(optimizer=optimizers.Adam(learning_rate=learning_rate), loss="binary_crossentropy", metrics=["accuracy"])
+    m.compile(optimizer=optimizers.Adam(learning_rate=learning_rate), loss=loss, metrics=["accuracy"])
     return m
 
 
-def build_cnn_2d(input_shape: Tuple[int, int, int], n_dense_layers: int = 2, kernel_size: int = DEFAULT_KERNEL_SIZE_2D, filters: Sequence[int] = DEFAULT_FILTERS_2D, dense_units: int = DEFAULT_UNITS, use_batch_norm: bool = DEFAULT_USE_BATCH_NORM, pooling: str = DEFAULT_POOLING, learning_rate: float = DEFAULT_LEARNING_RATE) -> tf.keras.Model:
+def build_cnn_2d(
+    input_shape: Tuple[int, int, int],
+    n_dense_layers: int = 2,
+    kernel_size: int = DEFAULT_KERNEL_SIZE_2D,
+    filters: Sequence[int] = DEFAULT_FILTERS_2D,
+    dense_units: int = DEFAULT_UNITS,
+    use_batch_norm: bool = DEFAULT_USE_BATCH_NORM,
+    pooling: str = DEFAULT_POOLING,
+    learning_rate: float = DEFAULT_LEARNING_RATE,
+    num_classes: int = 1,
+) -> tf.keras.Model:
     """Construct 2D Convolutional Neural Network distinguisher."""
     inputs = layers.Input(shape=input_shape, name="cnn2d_input")
     x = inputs
@@ -57,9 +93,14 @@ def build_cnn_2d(input_shape: Tuple[int, int, int], n_dense_layers: int = 2, ker
     x = layers.GlobalAveragePooling2D(name="gap2d")(x) if pooling == "gap" else layers.Flatten(name="flatten")(x)
     for i in range(n_dense_layers):
         x = layers.Dense(dense_units, activation="relu", name=f"dense_{i + 1}")(x)
-    outputs = layers.Dense(1, activation="sigmoid", name="output_sigmoid")(x)
+    if num_classes == 1:
+        outputs = layers.Dense(1, activation="sigmoid", name="output_sigmoid")(x)
+        loss = "binary_crossentropy"
+    else:
+        outputs = layers.Dense(num_classes, activation="softmax", name="output_softmax")(x)
+        loss = "categorical_crossentropy"
     m = models.Model(inputs=inputs, outputs=outputs, name=f"CNN2D_L{n_dense_layers}_K{kernel_size}_F{'-'.join(map(str, filters))}")
-    m.compile(optimizer=optimizers.Adam(learning_rate=learning_rate), loss="binary_crossentropy", metrics=["accuracy"])
+    m.compile(optimizer=optimizers.Adam(learning_rate=learning_rate), loss=loss, metrics=["accuracy"])
     return m
 
 
@@ -68,7 +109,7 @@ def prepare_input(X_bits: np.ndarray, model_type: str, experiment: str, block_bi
     m_type, exp = model_type.lower().strip(), experiment.lower().strip().replace("exp_", "")
     N, X_f, p_bits = X_bits.shape[0], X_bits.astype(np.float32), 2 * block_bits
 
-    if exp in ("a", "c"):
+    if exp in ("a", "c", "d", "e", "f", "g"):
         if m_type == "mlp":
             return X_f.reshape((N, p_bits))
         if m_type == "cnn_1d":

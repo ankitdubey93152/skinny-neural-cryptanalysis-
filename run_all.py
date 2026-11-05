@@ -1,4 +1,4 @@
-"""Top-level master script to run Experiments A, B, and C and compile the final report."""
+"""Top-level master script to run Experiments A, B, and C (and optionally extended D, E, F, G) and compile reports."""
 import os, sys, argparse, time
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
@@ -6,7 +6,9 @@ from experiments.run_experiment_a import run_experiment_a
 from experiments.run_experiment_b import run_experiment_b
 from experiments.run_experiment_c import run_experiment_c
 from generate_report import generate_markdown_report
+from generate_figures import generate_all_figures
 from config import DEFAULT_DELTA
+
 
 def main():
     p = argparse.ArgumentParser(description="Master Execution Pipeline for SKINNY-128-128 Neural Cryptanalysis")
@@ -19,12 +21,13 @@ def main():
     p.add_argument("--results-dir", type=str, default="results_skinny", help="Target results directory")
     p.add_argument("--data-dir", type=str, default="data_skinny", help="Directory to cache datasets")
     p.add_argument("--quick", action="store_true", help="Quick execution mode")
+    p.add_argument("--extended", action="store_true", help="Run extended experiments D, E, F and G")
     args = p.parse_args()
 
     delta = args.delta if args.delta is not None else DEFAULT_DELTA
     t0 = time.time()
     print("=" * 80 + f"\nSTARTING FULL REPRODUCIBILITY PIPELINE: SKINNY-128-128 NEURAL CRYPTANALYSIS\n"
-          f"Configurations: samples={args.samples}, results_dir='{args.results_dir}', quick_mode={args.quick}\n" + "=" * 80)
+          f"Configurations: samples={args.samples}, results_dir='{args.results_dir}', quick_mode={args.quick}, extended={args.extended}\n" + "=" * 80)
 
     # 1. Run Experiment A (Single-pair differential distinguisher)
     print("\n>>> [1/3] EXECUTING EXPERIMENT A...")
@@ -41,11 +44,61 @@ def main():
     run_experiment_c(rounds=args.rounds, n_samples=args.samples, delta=delta, eval_mode=args.eval_mode,
                      epochs=args.epochs, models=args.models, results_dir=args.results_dir, data_dir=args.data_dir, quick_mode=args.quick)
 
-    # 4. Generate Synthesis Report
-    print("\n>>> [4/4] GENERATING SYNTHESIS REPORT...")
-    generate_markdown_report(results_dir=args.results_dir, output_path=os.path.join(args.results_dir, "report.md"))
+    if args.extended:
+        from experiments.run_experiment_sample_size import run_sample_size_sweep
+        from experiments.run_experiment_g import run_experiment_g
+
+        # 4. Run Experiments D, E, F (Small-sample distinguishers)
+        print("\n>>> [EXTENDED 1/2] EXECUTING EXPERIMENTS D, E, F (Small-Sample Scaling: N in 50, 500, 5000)...")
+        sweep_rounds = [1, 2, 4] if args.quick else (args.rounds or [1, 2, 4])
+        fast_models = ["MLP (Dense=2)"] if args.quick else (args.models or ["MLP (Dense=2)"])
+        run_sample_size_sweep(
+            sample_sizes=[50, 500, 5000],
+            rounds=sweep_rounds,
+            epochs=1 if args.quick else args.epochs,
+            models=fast_models,
+            results_dir=args.results_dir,
+            data_dir=args.data_dir,
+        )
+
+        # 5. Run Experiment G (Multi-cipher identification)
+        print("\n>>> [EXTENDED 2/2] EXECUTING EXPERIMENT G (Multi-Cipher Identification)...")
+        g_samples = 200 if args.quick else args.samples
+        g_rounds = [1, 2] if args.quick else (sweep_rounds)
+        run_experiment_g(
+            scope="native-128",
+            round_mode="matched",
+            rounds=g_rounds,
+            n_samples=g_samples,
+            epochs=1 if args.quick else args.epochs,
+            models=fast_models,
+            results_dir=args.results_dir,
+            data_dir=args.data_dir,
+        )
+        run_experiment_g(
+            scope="common-64",
+            round_mode="matched",
+            rounds=g_rounds,
+            n_samples=g_samples,
+            epochs=1 if args.quick else args.epochs,
+            models=fast_models,
+            results_dir=args.results_dir,
+            data_dir=args.data_dir,
+        )
+
+    # Figures Generation
+    print("\n>>> GENERATING IEEE-STYLE FIGURES...")
+    generate_all_figures(results_dir=args.results_dir, extended=args.extended)
+
+    # Synthesis Report Generation
+    print("\n>>> GENERATING SYNTHESIS REPORTS...")
+    generate_markdown_report(results_dir=args.results_dir, output_path=os.path.join(args.results_dir, "report.md"), extended=False)
+    if args.extended:
+        generate_markdown_report(results_dir=args.results_dir, output_path=os.path.join(args.results_dir, "report_extended.md"), extended=True)
+
     print("\n" + "=" * 80 + f"\nFULL PIPELINE EXECUTION COMPLETED IN {time.time() - t0:.1f}s!\n"
           f"CSVs, plots, and markdown report are located in: {args.results_dir}/\n" + "=" * 80)
+
 
 if __name__ == "__main__":
     main()
